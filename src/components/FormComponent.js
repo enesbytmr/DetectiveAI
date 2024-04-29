@@ -56,7 +56,7 @@ function FormComponent() {
   return (
     <Paper style={{ padding: 20 }}>
       <Typography variant="h6" gutterBottom>
-        Dataset Form
+        Detective AI
       </Typography>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
