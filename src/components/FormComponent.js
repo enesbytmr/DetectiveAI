@@ -27,31 +27,40 @@ function FormComponent() {
     recordSource: '',
   });
   const [responseMessage, setResponseMessage] = useState("");
+  const [showForm, setShowForm] = useState(true);  
 
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+      
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    axios.post('https://8c9a-212-125-15-135.ngrok-free.app/predict', formData, {
+    axios.post('https://4fb5-178-247-188-87.ngrok-free.app/predict', formData, {
       timeout: 30000
     })
       .then(response => {
         console.log('Server response:', response.data);
         const story = response.data.data.chatgpt_response;
         setResponseMessage(story);
+        setShowForm(false);
       })
       .catch(error => {
         console.error('Error:', error);
         setResponseMessage(`Error: ${error.message || "Unknown error"}`);
       });
   };
+
+  const handleRetry = () => {
+    setResponseMessage("");  // Hikayeyi temizle
+    setShowForm(true);       // Formu tekrar göster
+  };
+
 
 
 
@@ -94,56 +103,64 @@ function FormComponent() {
   };
 
   return (
-    <Paper style={{ padding: 20 }}>
-      <Typography variant="h6" gutterBottom>
+    <Paper style={{ padding: 20, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <Typography variant="h6" gutterBottom align="center">
         Detective AI
       </Typography>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          {Object.keys(formData).map((key) => (
-            <Grid item xs={12} sm={6} key={key}>
-              {options[key] ? (
-                <FormControl fullWidth>
-                  <InputLabel>{key}</InputLabel>
-                  <Select
+      {showForm ? (
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            {Object.keys(formData).map((key) => (
+              <Grid item xs={12} sm={6} key={key}>
+                {options[key] ? (
+                  <FormControl fullWidth>
+                    <InputLabel>{key}</InputLabel>
+                    <Select
+                      name={key}
+                      value={formData[key]}
+                      onChange={handleChange}
+                      label={key}
+                    >
+                      {options[key].map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <TextField
+                    fullWidth
+                    label={key}
                     name={key}
                     value={formData[key]}
                     onChange={handleChange}
-                    label={key}
-                  >
-                    {options[key].map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              ) : (
-                <TextField
-                  fullWidth
-                  label={key}
-                  name={key}
-                  value={formData[key]}
-                  onChange={handleChange}
-                  variant="outlined"
-                />
-              )}
+                    variant="outlined"
+                  />
+                )}
+              </Grid>
+            ))}
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                Submit
+              </Button>
             </Grid>
-          ))}
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary">
-              Submit
-            </Button>
           </Grid>
-        </Grid>
-      </form>
-      {responseMessage && (
-        <Typography style={{ marginTop: 20 }}>
-          {responseMessage}
-        </Typography>
+        </form>
+      ) : (
+        <>
+          <Typography style={{ textAlign: 'center', marginTop: 20 }}>
+            {responseMessage}
+          </Typography>
+          <Button variant="outlined" color="primary" onClick={handleRetry} style={{ marginTop: 20 }}>
+            Tekrar Dene
+          </Button>
+        </>
       )}
     </Paper>
   );
+  
+  
 }
 
 export default FormComponent;
