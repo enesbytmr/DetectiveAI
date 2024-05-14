@@ -29,19 +29,17 @@ function FormComponent() {
   const [responseMessage, setResponseMessage] = useState("");
   const [showForm, setShowForm] = useState(true);  
 
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-      
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    axios.post('https://4fb5-178-247-188-87.ngrok-free.app/predict', formData, {
+    axios.post('https://8db6-194-27-102-196.ngrok-free.app/predict', formData, {
       timeout: 30000
     })
       .then(response => {
@@ -57,13 +55,22 @@ function FormComponent() {
   };
 
   const handleRetry = () => {
-    setResponseMessage("");  // Hikayeyi temizle
-    setShowForm(true);       // Formu tekrar göster
+    setResponseMessage("");
+    setShowForm(true);
   };
 
+  const fillRandomData = () => {
+    const newFormData = {};
+    Object.keys(formData).forEach(key => {
+      if (options[key]) {
+        const randomIndex = Math.floor(Math.random() * options[key].length);
+        newFormData[key] = options[key][randomIndex];
+      }
+    });
+    setFormData(newFormData);
+  };
 
-
-
+ 
   const options = {
     agencyName:['Anchorage', 'Juneau', 'Nome', 'Bethel', 'North Slope Borough', 'Kenai', 'Alaska State Police', 'Jefferson', 'Bessemer', 'Birmingham', 'Fairfield', 'Gardendale', 'Leeds', 'Homewood', 'Brighton', 'Hueytown', 'Warrior', 'Mobile', 'Prichard', 'Saraland', 'Satsuma', 'Montgomery', 'Autauga', 'Baldwin', 'Robertsdale', 'Daphne', 'Barbour', 'Blount', 'Bullock', 'Butler', 'Greenville', 'Calhoun', 'Anniston', 'Oxford', 'Chambers', 'Lafayette', 'Chilton', 'Choctaw', 'Clarke', 'Thomasville', 'Enterprise', 'Colbert', 'Conecuh', 'Coosa', 'Rockford', 'Andalusia', 'Crenshaw', 'Cullman', 'Dale', 'Ozark', 'Dallas', 'Selma', 'Collinsville', 'Elmore', 'Tallassee', 'Atmore', 'Brewton', 'Attalla', 'Gadsden', 'Fayette', 'Franklin', 'Red Bay', 'Geneva', 'Greene', 'Houston', 'Dothan', 'Jackson', 'Scottsboro', 'Lamar', 'Lauderdale', 'Florence', 'Lawrence', 'Lee', 'Auburn', 'Opelika', 'Limestone', 'Athens', 'Lowndes', 'Tuskegee', 'Huntsville', 'New Hope', 'Owens Crossroads', 'Marengo', 'Hackleburg', 'Marshall', 'Albertville', 'Morgan', 'Decatur', 'Hartselle', 'Marion', 'Pickens', 'Troy', 'Russell', 'Phenix City', 'St. Clair', 'Springville', 'Shelby', 'Alabaster', 'Sumter', 'Livingston'],
 
@@ -101,6 +108,7 @@ function FormComponent() {
     recordSource: ['FBI' ,'FOIA'],
     
   };
+
 
   return (
     <Paper style={{ padding: 20, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
@@ -144,6 +152,9 @@ function FormComponent() {
               <Button type="submit" variant="contained" color="primary" fullWidth>
                 Submit
               </Button>
+              <Button onClick={fillRandomData} variant="contained" color="secondary" fullWidth style={{ marginTop: 8 }}>
+                Fill Random Data
+              </Button>
             </Grid>
           </Grid>
         </form>
@@ -153,16 +164,12 @@ function FormComponent() {
             {responseMessage}
           </Typography>
           <Button variant="outlined" color="primary" onClick={handleRetry} style={{ marginTop: 20 }}>
-            Tekrar Dene
+            Try Again
           </Button>
         </>
       )}
     </Paper>
   );
-  
-  
 }
 
 export default FormComponent;
-
-
