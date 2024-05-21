@@ -39,7 +39,7 @@ function FormComponent() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    axios.post('https://02de-193-140-24-128.ngrok-free.app/predict', formData, {
+    axios.post('https://9f2a-178-240-138-75.ngrok-free.app/predict', formData, {
       timeout: 30000
     })
       .then(response => {
